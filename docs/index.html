@@ -442,6 +442,7 @@
     <img src="https://img.shields.io/badge/Python-3.11%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python 3.11+" />
     <img src="https://img.shields.io/badge/Playwright-1.51%2B-2EAD33?style=flat-square&logo=playwright&logoColor=white" alt="Playwright" />
     <img src="https://img.shields.io/badge/pytest-8.3%2B-0A9EDC?style=flat-square&logo=pytest&logoColor=white" alt="pytest" />
+    <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square" alt="Windows macOS Linux" />
     <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
     <img src="https://img.shields.io/badge/Open%20Source-%E2%9D%A4-red?style=flat-square" alt="Open Source" />
   </div>
@@ -521,9 +522,14 @@
         <p>Built-in <code>TablePage</code> iterates every row across all pages. No boilerplate pagination loops.</p>
       </div>
       <div class="card">
+        <div class="card-icon">💻</div>
+        <h3>Windows, macOS &amp; Linux</h3>
+        <p><code>setup.bat</code> for Windows, <code>setup.sh</code> for macOS/Linux, and a <code>Makefile</code> with universal targets that work everywhere.</p>
+      </div>
+      <div class="card">
         <div class="card-icon">⚡</div>
         <h3>5-minute setup</h3>
-        <p>Clone → <code>setup.bat</code> → done. Creates venv, installs deps, and installs browsers in one step.</p>
+        <p>Clone → <code>setup.bat</code> / <code>setup.sh</code> / <code>make setup</code> → done. Creates venv, installs deps, and installs browsers in one step.</p>
       </div>
     </div>
   </div>
@@ -548,8 +554,8 @@
         <div class="qs-step">
           <div class="qs-num">2</div>
           <div>
-            <h4>Run setup.bat</h4>
-            <p>Creates venv, installs all deps &amp; Playwright browsers</p>
+            <h4>Run setup</h4>
+            <p>Windows: <code>setup.bat</code> &nbsp;|&nbsp; macOS/Linux: <code>bash setup.sh</code> &nbsp;|&nbsp; Any: <code>make setup</code></p>
           </div>
         </div>
         <div class="qs-step">
@@ -563,22 +569,51 @@
           <div class="qs-num">4</div>
           <div>
             <h4>Record your first test</h4>
-            <p>Run record.bat → interact in browser → code saved automatically</p>
+            <p><code>record.bat</code> / <code>make record</code> → interact in browser → code saved automatically</p>
           </div>
         </div>
         <div class="qs-step">
           <div class="qs-num">5</div>
           <div>
             <h4>Run &amp; see results</h4>
-            <p>Run run.bat → pick option → HTML report opens automatically</p>
+            <p><code>run.bat</code> / <code>make run</code> → pick option → HTML report opens automatically</p>
           </div>
         </div>
       </div>
 
       <div>
-        <div class="code-wrap">
+        <!-- OS tab strip -->
+        <div style="display:flex;gap:0;margin-bottom:-1px;">
+          <button class="os-tab active" onclick="switchTab(this,'win')" style="padding:7px 16px;border:1px solid var(--border);border-bottom:none;background:var(--bg3);color:var(--text);font-size:.8rem;font-weight:600;border-radius:6px 6px 0 0;cursor:pointer;">Windows</button>
+          <button class="os-tab" onclick="switchTab(this,'mac')" style="padding:7px 16px;border:1px solid var(--border);border-bottom:none;background:var(--bg2);color:var(--text-muted);font-size:.8rem;font-weight:600;border-radius:6px 6px 0 0;cursor:pointer;margin-left:4px;">macOS / Linux</button>
+          <button class="os-tab" onclick="switchTab(this,'make')" style="padding:7px 16px;border:1px solid var(--border);border-bottom:none;background:var(--bg2);color:var(--text-muted);font-size:.8rem;font-weight:600;border-radius:6px 6px 0 0;cursor:pointer;margin-left:4px;">Makefile</button>
+        </div>
+
+        <div id="qs-win" class="code-wrap" style="margin-top:0;border-radius:0 var(--radius) var(--radius) var(--radius);">
           <div class="code-header">
-            <span class="code-title">bash — Windows</span>
+            <span class="code-title">Windows (cmd / PowerShell)</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="cm">:: 1. Clone</span>
+git clone https://github.com/shaik-shahansha/tesqo.git
+cd tesqo
+
+<span class="cm">:: 2. One-time setup</span>
+setup.bat
+
+<span class="cm">:: 3. Set your app details</span>
+notepad .env
+
+<span class="cm">:: 4. Record a test</span>
+record.bat
+
+<span class="cm">:: 5. Run &amp; report</span>
+run.bat</pre>
+        </div>
+
+        <div id="qs-mac" class="code-wrap" style="display:none;margin-top:0;border-radius:0 var(--radius) var(--radius) var(--radius);">
+          <div class="code-header">
+            <span class="code-title">macOS / Linux (bash)</span>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
           </div>
           <pre><span class="cm"># 1. Clone</span>
@@ -586,16 +621,42 @@ git clone https://github.com/shaik-shahansha/tesqo.git
 cd tesqo
 
 <span class="cm"># 2. One-time setup</span>
-setup.bat
+bash setup.sh
 
 <span class="cm"># 3. Set your app details</span>
-notepad .env
+nano .env
 
 <span class="cm"># 4. Record a test</span>
-record.bat
+make record
 
 <span class="cm"># 5. Run &amp; report</span>
-run.bat</pre>
+make run</pre>
+        </div>
+
+        <div id="qs-make" class="code-wrap" style="display:none;margin-top:0;border-radius:0 var(--radius) var(--radius) var(--radius);">
+          <div class="code-header">
+            <span class="code-title">Makefile — any platform</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="cm"># First-time setup</span>
+make setup
+
+<span class="cm"># Run smoke / regression / all</span>
+make smoke
+make regression
+make all-tests
+
+<span class="cm"># Record a new test</span>
+make record
+
+<span class="cm"># Interactive menu</span>
+make run
+
+<span class="cm"># Open last HTML report</span>
+make report
+
+<span class="cm"># List all targets</span>
+make help</pre>
         </div>
 
         <div class="code-wrap">
@@ -686,7 +747,7 @@ run.bat</pre>
   <div class="container">
     <div class="section-label">Test Runner</div>
     <h2>Run tests — no flags to memorise</h2>
-    <p class="section-desc">Interactive menu or direct CLI commands. Browser selection on every run.</p>
+    <p class="section-desc">Interactive menu (<code>run.bat</code> / <code>make run</code>) or direct CLI commands. Browser selection on every run.</p>
 
     <div class="two-col">
       <div>
@@ -904,9 +965,11 @@ rows = load_excel(<span class="str">"data/test_data.xlsx"</span>, sheet=<span cl
 │<br/>
 ├── <span class="secret">.env</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← 🔐 Your secrets (never commit this)</span><br/>
 ├── <span class="file">.env.example</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Template — safe to commit</span><br/>
-├── <span class="file">setup.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← One-time first-run setup</span><br/>
-├── <span class="file">record.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Smart recorder launcher</span><br/>
-├── <span class="file">run.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Interactive test runner menu</span><br/>
+├── <span class="file">setup.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← One-time first-run setup (Windows)</span><br/>
+├── <span class="file">setup.sh</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← One-time first-run setup (macOS/Linux)</span><br/>
+├── <span class="file">Makefile</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Universal commands for all platforms</span><br/>
+├── <span class="file">record.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Smart recorder launcher (Windows)</span><br/>
+├── <span class="file">run.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Interactive test runner menu (Windows)</span><br/>
 ├── <span class="file">pytest.ini</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← pytest config and markers</span><br/>
 ├── <span class="file">requirements.txt</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← All dependencies pinned</span><br/>
 │<br/>
@@ -1151,6 +1214,19 @@ tesqo switch client-portal</pre>
 </footer>
 
 <script>
+  // OS tab switcher (Quick Start section)
+  function switchTab(btn, os) {
+    ['win','mac','make'].forEach(id => {
+      document.getElementById('qs-' + id).style.display = (id === os) ? 'block' : 'none';
+    });
+    btn.closest('div').querySelectorAll('.os-tab').forEach(t => {
+      t.style.background = 'var(--bg2)';
+      t.style.color = 'var(--text-muted)';
+    });
+    btn.style.background = 'var(--bg3)';
+    btn.style.color = 'var(--text)';
+  }
+
   // Copy button
   function copyCode(btn) {
     const pre = btn.closest('.code-wrap').querySelector('pre');

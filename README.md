@@ -23,29 +23,61 @@ regression suite with minimal setup and zero boilerplate.
 | "Data-driven tests need coding" | Point at an Excel file — rows become test cases automatically |
 | "I don't know what failed" | HTML report + screenshots auto-captured on every failure |
 | "Works on my machine" | Chrome and Edge both supported — same test, one flag |
+| "I'm on Mac/Linux, not Windows" | `setup.sh` + `Makefile` — same workflow on all platforms |
 | "Tables / pagination are hard" | Built-in `TablePage` helper iterates all rows across all pages |
-| "Setup takes forever" | One command (`setup.bat`) installs everything including browsers |
+| "Setup takes forever" | One command (`setup.bat` / `setup.sh` / `make setup`) installs everything |
 
 ---
 
 ## 🚀 Quick Start (5 minutes)
 
+**Windows**
+```bat
+:: 1. Clone / download the project
+git clone https://github.com/yourusername/tesqo.git
+cd tesqo
+
+:: 2. First-time setup (creates venv, installs deps, installs browsers)
+setup.bat
+
+:: 3. Edit .env with your app's URL and credentials
+notepad .env
+
+:: 4. Record your first test
+record.bat
+
+:: 5. Run everything and see the report
+run.bat
+```
+
+**macOS / Linux**
 ```bash
 # 1. Clone / download the project
 git clone https://github.com/yourusername/tesqo.git
 cd tesqo
 
-# 2. First-time setup (creates venv, installs deps, installs browsers)
-setup.bat
+# 2. First-time setup
+bash setup.sh          # or: make setup
 
-# 3. Edit .env with your app's URL and credentials
-notepad .env
+# 3. Edit .env
+nano .env              # or: open .env (macOS)
 
 # 4. Record your first test
-record.bat
+make record
 
 # 5. Run everything and see the report
-run.bat
+make run
+```
+
+**Any platform — Makefile shortcuts**
+```bash
+make setup        # first-time setup
+make smoke        # run smoke tests
+make regression   # run regression tests
+make record       # launch recorder
+make run          # interactive runner menu
+make report       # open last HTML report
+make help         # list all targets
 ```
 
 That's it. No pytest knowledge required to get started.
@@ -54,11 +86,12 @@ That's it. No pytest knowledge required to get started.
 
 ## 📋 Prerequisites
 
-| Requirement | Version | Download |
+| Requirement | Version | Notes |
 |---|---|---|
 | Python | 3.11+ | https://python.org |
 | Node.js | Not required | — |
 | Chrome or Edge | Any modern | Pre-installed on most systems |
+| make | Any | Pre-installed on macOS/Linux; Windows: [Git Bash](https://gitforwindows.org/) or [Chocolatey](https://chocolatey.org/) `choco install make` |
 
 ---
 
@@ -69,9 +102,11 @@ tesqo/
 │
 ├── .env                    ← 🔐 Your secrets (never commit this)
 ├── .env.example            ← Template — safe to commit
-├── setup.bat               ← One-time first-run setup
-├── record.bat              ← Smart recorder launcher
-├── run.bat                 ← Interactive test runner menu
+├── setup.bat               ← One-time first-run setup (Windows)
+├── setup.sh                ← One-time first-run setup (macOS/Linux)
+├── Makefile                ← Universal commands for all platforms
+├── record.bat              ← Smart recorder launcher (Windows)
+├── run.bat                 ← Interactive test runner menu (Windows)
 ├── pytest.ini              ← pytest config and markers
 ├── requirements.txt        ← All dependencies pinned
 │
@@ -134,7 +169,7 @@ Secrets never appear hardcoded in test files.
 
 ## 🎬 Recording Tests
 
-Run `record.bat` and answer three questions:
+Run `record.bat` (Windows), `make record` (any platform), or `python scripts/record.py` and answer three questions:
 
 ```
   ╔══════════════════════════════════════╗
@@ -163,7 +198,7 @@ Minimal editing needed — usually just fixing selectors.
 
 ## ▶️ Running Tests
 
-Run `run.bat` for the interactive menu:
+Run `run.bat` (Windows) or `make run` (any platform) for the interactive menu:
 
 ```
   ╔══════════════════════════════════════╗
@@ -398,16 +433,24 @@ All open source. No paid services required.
 git clone https://github.com/yourusername/tesqo.git
 cd tesqo
 
-# Windows — one command setup
+# Windows — one command
 setup.bat
 
-# Manual (Mac/Linux)
-python -m venv .venv
-source .venv/bin/activate           # Mac/Linux
+# macOS / Linux — one command
+bash setup.sh
+
+# Any platform with make
+make setup
+
+# Manual
+python3 -m venv .venv
+source .venv/bin/activate           # macOS/Linux
+.venv\Scripts\activate              # Windows cmd
 pip install -r requirements.txt
 playwright install chromium msedge
-cp .env.example .env
-python data/create_sample_data.py   # creates sample Excel file
+cp .env.example .env                # macOS/Linux
+copy .env.example .env              # Windows cmd
+python data/create_sample_data.py
 ```
 
 ---
