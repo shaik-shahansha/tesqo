@@ -357,6 +357,41 @@
     .footer-links a:hover { color: var(--brand-light); }
     .footer-copy { color: var(--text-muted); font-size: .8rem; }
 
+    /* ── Creator ──────────────────────────────────────────────────── */
+    .creator-card {
+      max-width: 480px; margin: 0 auto;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 40px 36px;
+      text-align: center;
+      transition: border-color .2s, transform .2s;
+    }
+    .creator-card:hover { border-color: var(--brand); transform: translateY(-2px); }
+    .creator-avatar {
+      width: 100px; height: 100px; border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--brand);
+      box-shadow: 0 0 24px rgba(124,58,237,.35);
+      margin-bottom: 20px;
+    }
+    .creator-name { font-size: 1.35rem; font-weight: 800; margin-bottom: 4px; }
+    .creator-title {
+      font-size: .85rem; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--brand-light); margin-bottom: 16px;
+    }
+    .creator-bio { font-size: .9rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; }
+    .creator-links { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .creator-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text-muted); font-size: .82rem; font-weight: 600;
+      padding: 7px 16px; border-radius: var(--radius-sm);
+      transition: all .2s;
+    }
+    .creator-link:hover {
+      border-color: var(--brand-light); color: var(--brand-light);
+      text-decoration: none; transform: translateY(-1px);
+    }
+
     /* ── Responsive ───────────────────────────────────────────────── */
     @media (max-width: 600px) {
       .step::after { display: none; }
@@ -381,6 +416,7 @@
       <a href="#run">Run</a>
       <a href="#stack">Tech Stack</a>
       <a href="#roadmap">Roadmap</a>
+      <a href="#creator">Creator</a>
       <a href="https://github.com/shaik-shahansha/tesqo" class="nav-cta" target="_blank" rel="noopener">
         ★ GitHub
       </a>
@@ -1065,6 +1101,37 @@ tesqo switch client-portal</pre>
   </div>
 </section>
 
+<!-- ── Creator ─────────────────────────────────────────────────────── -->
+<section id="creator">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label" style="justify-content:center;display:flex;">Built By</div>
+      <h2>Meet the creator</h2>
+      <p class="section-desc" style="margin:0 auto 40px;">The person behind Tesqo.</p>
+    </div>
+    <div class="creator-card">
+      <img
+        class="creator-avatar"
+        src="https://shahansha.com/wp-content/uploads/2024/12/sha1.jpg"
+        alt="Shahansha Shaik"
+      />
+      <div class="creator-name">Shahansha Shaik</div>
+      <div class="creator-title">QA Automation Engineer &amp; AI Enthusiast</div>
+      <p class="creator-bio">
+        Passionate about making test automation accessible to everyone.
+        Built Tesqo to give QA engineers a batteries-included framework —
+        record, run, and report without writing a single line of boilerplate.
+      </p>
+      <div class="creator-links">
+        <a class="creator-link" href="https://shahansha.com" target="_blank" rel="noopener">🌐 Website</a>
+        <a class="creator-link" href="https://linkedin.com/in/shahansha" target="_blank" rel="noopener">💼 LinkedIn</a>
+        <a class="creator-link" href="https://www.youtube.com/watch?v=3VDbQoveeY0&list=PLS_kVNUvo93bYpR3eqYovAk53XkGgzu7j" target="_blank" rel="noopener">▶ YouTube</a>
+        <a class="creator-link" href="https://github.com/shaik-shahansha" target="_blank" rel="noopener">🐙 GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── Footer ────────────────────────────────────────────────────────── -->
 <footer>
   <div class="footer-logo">🧪 Tesqo</div>
@@ -1075,6 +1142,7 @@ tesqo switch client-portal</pre>
     <a href="https://github.com/shaik-shahansha/tesqo/blob/main/ROADMAP.md" target="_blank" rel="noopener">Roadmap</a>
     <a href="https://github.com/shaik-shahansha/tesqo/issues" target="_blank" rel="noopener">Issues</a>
     <a href="https://github.com/shaik-shahansha/tesqo/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+    <a href="#creator">Creator</a>
   </div>
   <div class="footer-copy">
     Built with ❤️ for testers who believe web automation should be easy.<br/>
