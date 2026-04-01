@@ -1,0 +1,36 @@
+# Secrets — NEVER commit this file
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Playwright
+reports/videos/
+reports/allure-results/
+tests/_recorded_temp.py
+
+# Reports (keep folder structure, ignore generated content)
+reports/html/*.html
+reports/screenshots/*.png
+reports/screenshots/*.jpg
+
+# Test data (may contain sensitive data)
+data/test_data.xlsx
+
+# Editor / OS
+.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Coverage
+.coverage
+htmlcov/
