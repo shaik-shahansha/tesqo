@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesqo — Automate your web tests with ease</title>
+  <meta name="description" content="Tesqo is a batteries-included web test automation framework built on Playwright + pytest. Record, Run & Report." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand:        #7c3aed;
+      --brand-light:  #a78bfa;
+      --brand-dark:   #5b21b6;
+      --accent:       #06b6d4;
+      --green:        #10b981;
+      --red:          #ef4444;
+      --yellow:       #f59e0b;
+      --bg:           #0f0f13;
+      --bg2:          #16161d;
+      --bg3:          #1e1e2a;
+      --border:       #2d2d3d;
+      --text:         #e2e8f0;
+      --text-muted:   #94a3b8;
+      --code-bg:      #1a1a26;
+      --radius:       12px;
+      --radius-sm:    8px;
+      --shadow:       0 4px 24px rgba(0,0,0,.45);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    a { color: var(--brand-light); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Scrollbar ────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── Layout ───────────────────────────────────────────────────── */
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ──────────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,15,19,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto; padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1.2rem; font-weight: 800; color: var(--text);
+    }
+    .nav-logo span.icon { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .nav-links a {
+      color: var(--text-muted); font-size: .9rem; font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .nav-cta {
+      background: var(--brand); color: #fff !important;
+      padding: 8px 18px; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .875rem;
+      transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--brand-dark); text-decoration: none !important; }
+
+    /* ── Hero ─────────────────────────────────────────────────────── */
+    .hero {
+      padding: 96px 24px 80px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124,58,237,.25) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(124,58,237,.15); border: 1px solid rgba(124,58,237,.3);
+      color: var(--brand-light); padding: 6px 14px; border-radius: 999px;
+      font-size: .8rem; font-weight: 600; letter-spacing: .04em;
+      text-transform: uppercase; margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 800; line-height: 1.15;
+      background: linear-gradient(135deg, #fff 30%, var(--brand-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+    .hero-tagline {
+      font-size: 1.2rem; color: var(--text-muted);
+      max-width: 560px; margin: 0 auto 36px;
+    }
+    .hero-tagline strong { color: var(--text); }
+    .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 26px; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: .95rem; transition: all .2s;
+      cursor: pointer; border: none;
+    }
+    .btn-primary {
+      background: var(--brand); color: #fff;
+      box-shadow: 0 0 24px rgba(124,58,237,.35);
+    }
+    .btn-primary:hover { background: var(--brand-dark); text-decoration: none; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--brand-light); color: var(--brand-light); text-decoration: none; }
+
+    /* Badges row */
+    .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
+    .badges img { height: 22px; }
+
+    /* ── Steps strip ──────────────────────────────────────────────── */
+    .steps-strip {
+      background: var(--bg2); border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 36px 24px;
+    }
+    .steps-grid {
+      max-width: 960px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0;
+    }
+    .step {
+      text-align: center; padding: 16px 24px;
+      position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: '→';
+      position: absolute; right: -6px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--border); font-size: 1.4rem;
+    }
+    .step-num {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--accent));
+      color: #fff; font-weight: 700; font-size: .9rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+    }
+    .step h3 { font-size: .95rem; font-weight: 700; margin-bottom: 4px; }
+    .step p { font-size: .8rem; color: var(--text-muted); }
+
+    /* ── Sections ─────────────────────────────────────────────────── */
+    section { padding: 80px 0; }
+    section:nth-child(even) { background: var(--bg2); }
+
+    .section-label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--brand-light); margin-bottom: 10px;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 800; margin-bottom: 12px; line-height: 1.2;
+    }
+    .section-desc {
+      color: var(--text-muted); font-size: 1.05rem;
+      max-width: 600px; margin-bottom: 40px;
+    }
+
+    /* ── Why cards ────────────────────────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      transition: border-color .2s, transform .2s;
+    }
+    .card:hover { border-color: var(--brand); transform: translateY(-2px); }
+    .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .card p { font-size: .88rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── Code blocks ──────────────────────────────────────────────── */
+    .code-wrap {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden; margin: 24px 0;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+    }
+    .code-title { font-size: .8rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+    .copy-btn {
+      background: none; border: 1px solid var(--border);
+      color: var(--text-muted); font-size: .75rem; padding: 4px 10px;
+      border-radius: 4px; cursor: pointer; transition: all .2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .copy-btn:hover { border-color: var(--brand-light); color: var(--brand-light); }
+    pre {
+      padding: 20px; overflow-x: auto; font-size: .85rem;
+      font-family: 'JetBrains Mono', monospace; line-height: 1.7;
+    }
+    code { font-family: 'JetBrains Mono', monospace; }
+    p code, li code {
+      background: var(--code-bg); padding: 2px 7px;
+      border-radius: 4px; font-size: .85em;
+      border: 1px solid var(--border);
+    }
+
+    /* Syntax highlight colours */
+    .kw  { color: #c792ea; }  /* keyword */
+    .fn  { color: #82aaff; }  /* function */
+    .str { color: #c3e88d; }  /* string */
+    .cm  { color: #546e7a; }  /* comment */
+    .num { color: #f78c6c; }  /* number */
+    .op  { color: #89ddff; }  /* operator / decorator */
+    .hl  { color: #ffcb6b; }  /* highlight */
+
+    /* ── Two-col layout ───────────────────────────────────────────── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── CLI menu ─────────────────────────────────────────────────── */
+    .cli-menu {
+      background: #0d0d14; border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      font-family: 'JetBrains Mono', monospace; font-size: .85rem; line-height: 1.8;
+    }
+    .cli-menu .border { color: #4a4a6a; }
+    .cli-menu .label  { color: var(--brand-light); font-weight: 600; }
+    .cli-menu .num    { color: var(--accent); }
+    .cli-menu .action { color: var(--text); }
+
+    /* ── Tables ───────────────────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; margin: 24px 0; }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: .9rem;
+    }
+    th {
+      background: var(--bg3); color: var(--text-muted);
+      font-size: .75rem; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; padding: 10px 16px; text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,.02); }
+    .tag {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: .75rem; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+    }
+    .tag-smoke    { background: rgba(16,185,129,.15); color: #10b981; }
+    .tag-reg      { background: rgba(124,58,237,.15); color: var(--brand-light); }
+    .tag-auto     { background: rgba(245,158,11,.15); color: var(--yellow); }
+    .tag-slow     { background: rgba(239,68,68,.15); color: var(--red); }
+
+    /* ── Stack logos ──────────────────────────────────────────────── */
+    .stack-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .stack-item {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .stack-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .stack-info h4 { font-size: .9rem; font-weight: 700; margin-bottom: 2px; }
+    .stack-info span { font-size: .78rem; color: var(--text-muted); }
+
+    /* ── Directory tree ───────────────────────────────────────────── */
+    .tree {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      font-family: 'JetBrains Mono', monospace; font-size: .82rem; line-height: 1.9;
+    }
+    .tree .dir  { color: var(--accent); }
+    .tree .file { color: var(--text-muted); }
+    .tree .note { color: #546e7a; }
+    .tree .secret { color: var(--yellow); }
+
+    /* ── Roadmap timeline ─────────────────────────────────────────── */
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px;
+      width: 2px; background: var(--border);
+    }
+    .timeline-item { position: relative; margin-bottom: 28px; }
+    .timeline-dot {
+      position: absolute; left: -29px; top: 4px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--brand); border: 2px solid var(--bg2);
+    }
+    .timeline-dot.done { background: var(--green); }
+    .timeline-item h4 { font-size: .95rem; font-weight: 700; margin-bottom: 4px; }
+    .timeline-item p  { font-size: .85rem; color: var(--text-muted); }
+    .version-tag {
+      font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+      margin-left: 8px; vertical-align: middle;
+    }
+    .v-current { background: rgba(16,185,129,.15); color: var(--green); }
+    .v-next    { background: rgba(124,58,237,.15); color: var(--brand-light); }
+    .v-future  { background: rgba(148,163,184,.1); color: var(--text-muted); }
+
+    /* ── Quick start ──────────────────────────────────────────────── */
+    .qs-steps { counter-reset: qs; display: flex; flex-direction: column; gap: 16px; }
+    .qs-step {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 18px 20px;
+    }
+    .qs-num {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      background: var(--brand); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem;
+    }
+    .qs-step h4 { font-size: .9rem; font-weight: 700; margin-bottom: 4px; }
+    .qs-step p  { font-size: .85rem; color: var(--text-muted); }
+
+    /* ── Footer ───────────────────────────────────────────────────── */
+    footer {
+      background: var(--bg2); border-top: 1px solid var(--border);
+      padding: 48px 24px 32px; text-align: center;
+    }
+    .footer-logo { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+    .footer-tagline { color: var(--text-muted); font-size: .9rem; margin-bottom: 24px; }
+    .footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+    .footer-links a { color: var(--text-muted); font-size: .85rem; }
+    .footer-links a:hover { color: var(--brand-light); }
+    .footer-copy { color: var(--text-muted); font-size: .8rem; }
+
+    /* ── Responsive ───────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .step::after { display: none; }
+      .steps-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ──────────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <span class="icon">🧪</span>
+      <span>Tesqo</span>
+    </div>
+    <div class="nav-links">
+      <a href="#why">Why Tesqo</a>
+      <a href="#quickstart">Quick Start</a>
+      <a href="#record">Record</a>
+      <a href="#run">Run</a>
+      <a href="#stack">Tech Stack</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="https://github.com/shaik-shahansha/tesqo" class="nav-cta" target="_blank" rel="noopener">
+        ★ GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-badge">🧪 Open Source · Playwright + pytest</div>
+  <h1>Automate your web tests<br/>with ease</h1>
+  <p class="hero-tagline">
+    <strong>Record</strong> interactions in the browser, <strong>Run</strong> tests across Chrome &amp; Edge,
+    <strong>Report</strong> results with screenshots. Zero boilerplate.
+  </p>
+  <div class="hero-actions">
+    <a href="#quickstart" class="btn btn-primary">🚀 Get Started</a>
+    <a href="https://github.com/shaik-shahansha/tesqo" class="btn btn-outline" target="_blank" rel="noopener">
+      View on GitHub
+    </a>
+  </div>
+  <div class="badges">
+    <img src="https://img.shields.io/badge/Python-3.11%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python 3.11+" />
+    <img src="https://img.shields.io/badge/Playwright-1.51%2B-2EAD33?style=flat-square&logo=playwright&logoColor=white" alt="Playwright" />
+    <img src="https://img.shields.io/badge/pytest-8.3%2B-0A9EDC?style=flat-square&logo=pytest&logoColor=white" alt="pytest" />
+    <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
+    <img src="https://img.shields.io/badge/Open%20Source-%E2%9D%A4-red?style=flat-square" alt="Open Source" />
+  </div>
+</section>
+
+<!-- ── Steps strip ───────────────────────────────────────────────────── -->
+<div class="steps-strip">
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Clone &amp; Setup</h3>
+      <p>One command installs everything</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Record</h3>
+      <p>Interact in browser → code generated</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Run</h3>
+      <p>Interactive menu, Chrome &amp; Edge</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Report</h3>
+      <p>HTML report + screenshots on fail</p>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <h3>Ship</h3>
+      <p>Confident deploys, every time</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Why Tesqo ─────────────────────────────────────────────────────── -->
+<section id="why">
+  <div class="container">
+    <div class="section-label">Why Tesqo</div>
+    <h2>Built to remove every friction point</h2>
+    <p class="section-desc">Every feature exists to solve a real pain that QA engineers face daily.</p>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🎬</div>
+        <h3>Record instead of write</h3>
+        <p>Click record, interact with your browser — Tesqo generates clean pytest code automatically. No Playwright API knowledge required.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔐</div>
+        <h3>Secrets stay secret</h3>
+        <p>All credentials live in <code>.env</code>. BASE_URL, USERNAME, PASSWORD never appear hardcoded in any test file.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">▶️</div>
+        <h3>Interactive runner menu</h3>
+        <p>No memorising pytest flags. <code>run.bat</code> gives you a numbered menu — pick smoke, regression, single file, or record new.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>Excel data-driven tests</h3>
+        <p>Point at an Excel sheet — every row becomes a named test case automatically. No code changes needed.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📸</div>
+        <h3>Screenshots on every failure</h3>
+        <p>Failed tests auto-capture screenshots with timestamps. HTML reports are self-contained, shareable files.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <h3>Chrome &amp; Edge — one command</h3>
+        <p>Run on Chrome, Edge, or both in parallel. One flag change — no test modifications needed.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h3>Table &amp; pagination helper</h3>
+        <p>Built-in <code>TablePage</code> iterates every row across all pages. No boilerplate pagination loops.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>5-minute setup</h3>
+        <p>Clone → <code>setup.bat</code> → done. Creates venv, installs deps, and installs browsers in one step.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Quick Start ───────────────────────────────────────────────────── -->
+<section id="quickstart">
+  <div class="container">
+    <div class="section-label">Quick Start</div>
+    <h2>From zero to running tests in 5 minutes</h2>
+    <p class="section-desc">No pytest knowledge required to get started.</p>
+
+    <div class="two-col">
+      <div class="qs-steps">
+        <div class="qs-step">
+          <div class="qs-num">1</div>
+          <div>
+            <h4>Clone the repo</h4>
+            <p>Download Tesqo from GitHub</p>
+          </div>
+        </div>
+        <div class="qs-step">
+          <div class="qs-num">2</div>
+          <div>
+            <h4>Run setup.bat</h4>
+            <p>Creates venv, installs all deps &amp; Playwright browsers</p>
+          </div>
+        </div>
+        <div class="qs-step">
+          <div class="qs-num">3</div>
+          <div>
+            <h4>Edit .env</h4>
+            <p>Set your BASE_URL, USERNAME, PASSWORD</p>
+          </div>
+        </div>
+        <div class="qs-step">
+          <div class="qs-num">4</div>
+          <div>
+            <h4>Record your first test</h4>
+            <p>Run record.bat → interact in browser → code saved automatically</p>
+          </div>
+        </div>
+        <div class="qs-step">
+          <div class="qs-num">5</div>
+          <div>
+            <h4>Run &amp; see results</h4>
+            <p>Run run.bat → pick option → HTML report opens automatically</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-title">bash — Windows</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="cm"># 1. Clone</span>
+git clone https://github.com/shaik-shahansha/tesqo.git
+cd tesqo
+
+<span class="cm"># 2. One-time setup</span>
+setup.bat
+
+<span class="cm"># 3. Set your app details</span>
+notepad .env
+
+<span class="cm"># 4. Record a test</span>
+record.bat
+
+<span class="cm"># 5. Run &amp; report</span>
+run.bat</pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-title">.env — configuration</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="cm"># Application</span>
+<span class="hl">BASE_URL</span>=https://myapp.com
+<span class="hl">USERNAME</span>=admin
+<span class="hl">PASSWORD</span>=secret123
+
+<span class="cm"># Browser (chromium | msedge)</span>
+<span class="hl">BROWSER</span>=chromium
+<span class="hl">HEADLESS</span>=false</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Record ────────────────────────────────────────────────────────── -->
+<section id="record">
+  <div class="container">
+    <div class="section-label">Smart Recorder</div>
+    <h2>Record any interaction — code is written for you</h2>
+    <p class="section-desc">Answer 3 prompts, interact with your browser, close it. Tesqo handles the rest.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="cli-menu">
+          <span class="border">╔══════════════════════════════════════╗</span><br/>
+          <span class="border">║</span>  <span class="label">Tesqo — Smart Recorder</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">╚══════════════════════════════════════╝</span><br/>
+          <br/>
+          &nbsp;&nbsp;Test name (e.g. login_as_admin): <span class="str">login_admin</span><br/>
+          &nbsp;&nbsp;URL to record on [https://myapp.com]:<br/>
+          &nbsp;&nbsp;Category (smoke|regression|automation): <span class="str">smoke</span><br/>
+          <br/>
+          &nbsp;&nbsp;🎬  Opening browser at: https://myapp.com<br/>
+          &nbsp;&nbsp;→   Interact with the page.<br/>
+          &nbsp;&nbsp;    Close browser when done.<br/>
+          <br/>
+          &nbsp;&nbsp;✅  Test saved!<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;File: <span class="str">tests/smoke/test_login_admin.py</span><br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marker: <span class="op">@pytest.mark.smoke</span>
+        </div>
+      </div>
+      <div>
+        <p style="color:var(--text-muted); margin-bottom:16px; font-size:.9rem;">After recording, the generated test is automatically cleaned up:</p>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px;">
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:.88rem;">
+            <span style="color:var(--green);font-size:1rem;flex-shrink:0">✓</span>
+            <span><code>https://myapp.com</code> → <code>config.BASE_URL</code></span>
+          </li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:.88rem;">
+            <span style="color:var(--green);font-size:1rem;flex-shrink:0">✓</span>
+            <span><code>"admin"</code> → <code>config.USERNAME</code></span>
+          </li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:.88rem;">
+            <span style="color:var(--green);font-size:1rem;flex-shrink:0">✓</span>
+            <span><code>"secret123"</code> → <code>config.PASSWORD</code></span>
+          </li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:.88rem;">
+            <span style="color:var(--green);font-size:1rem;flex-shrink:0">✓</span>
+            <span>Adds <code>import pytest</code> and <code>from config.settings import config</code></span>
+          </li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:.88rem;">
+            <span style="color:var(--green);font-size:1rem;flex-shrink:0">✓</span>
+            <span>Adds <code>@pytest.mark.smoke</code> to every test function</span>
+          </li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:.88rem;">
+            <span style="color:var(--green);font-size:1rem;flex-shrink:0">✓</span>
+            <span>Saves to <code>tests/smoke/test_login_admin.py</code></span>
+          </li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:.88rem;">
+            <span style="color:var(--green);font-size:1rem;flex-shrink:0">✓</span>
+            <span>Prints exact command to run it immediately</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Run ───────────────────────────────────────────────────────────── -->
+<section id="run">
+  <div class="container">
+    <div class="section-label">Test Runner</div>
+    <h2>Run tests — no flags to memorise</h2>
+    <p class="section-desc">Interactive menu or direct CLI commands. Browser selection on every run.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="cli-menu">
+          <span class="border">╔══════════════════════════════════════╗</span><br/>
+          <span class="border">║</span>  <span class="label">Tesqo — Runner</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">╠══════════════════════════════════════╣</span><br/>
+          <span class="border">║</span>  <span class="num">1.</span>  <span class="action">Run ALL tests</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">║</span>  <span class="num">2.</span>  <span class="action">Run SMOKE tests</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">║</span>  <span class="num">3.</span>  <span class="action">Run REGRESSION tests</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">║</span>  <span class="num">4.</span>  <span class="action">Run AUTOMATION scripts</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">║</span>  <span class="num">5.</span>  <span class="action">Run a SINGLE test file</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">║</span>  <span class="num">6.</span>  <span class="action">Run a SINGLE test function</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">║</span>  <span class="num">7.</span>  <span class="action">Record a NEW test</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">║</span>  <span class="num">8.</span>  <span class="action">Open last report</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">║</span>  <span class="num">0.</span>  <span class="action">Exit</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="border">║</span><br/>
+          <span class="border">╚══════════════════════════════════════╝</span>
+        </div>
+        <p style="margin-top:12px;font-size:.82rem;color:var(--text-muted);">Browser choice asked every run: Chrome · Edge · Both in parallel</p>
+      </div>
+
+      <div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-title">bash — CLI equivalents</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="cm"># All tests</span>
+pytest tests/
+
+<span class="cm"># By marker</span>
+pytest tests/ -m smoke
+pytest tests/ -m regression
+
+<span class="cm"># Single file / function</span>
+pytest tests/smoke/test_login.py -v
+pytest tests/smoke/test_login.py::test_login_success -v
+
+<span class="cm"># Visible browser (debugging)</span>
+pytest tests/ --headed
+
+<span class="cm"># Edge browser</span>
+pytest tests/ --browser msedge
+
+<span class="cm"># Both browsers in parallel</span>
+pytest tests/ --browser chromium \
+              --browser msedge -n auto
+
+<span class="cm"># Slow motion for demos</span>
+pytest tests/ --headed --slowmo 1000</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Markers ───────────────────────────────────────────────────────── -->
+<section id="markers">
+  <div class="container">
+    <div class="section-label">Test Categories</div>
+    <h2>Organise with markers</h2>
+    <p class="section-desc">Tag every test — run exactly what you need, when you need it.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Marker</th>
+            <th>Purpose</th>
+            <th>When to run</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-smoke">@pytest.mark.smoke</span></td>
+            <td>Critical path — login, core navigation</td>
+            <td>Every deploy</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-reg">@pytest.mark.regression</span></td>
+            <td>Full feature coverage</td>
+            <td>Before every release</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-auto">@pytest.mark.automation</span></td>
+            <td>State-changing scripts (bulk activate, update)</td>
+            <td>On demand</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-slow">@pytest.mark.slow</span></td>
+            <td>Tests taking &gt;30 seconds</td>
+            <td>Nightly</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ── Data Driven ───────────────────────────────────────────────────── -->
+<section id="data">
+  <div class="container">
+    <div class="section-label">Data-Driven Testing</div>
+    <h2>Excel rows become test cases</h2>
+    <p class="section-desc">No code changes — add a row in Excel, get a new test case automatically.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>username</th><th>password</th><th>role</th><th>should_pass</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>alice</td><td>pass_alice</td><td>Admin</td><td style="color:var(--green)">TRUE</td></tr>
+              <tr><td>bob</td><td>pass_bob</td><td>User</td><td style="color:var(--green)">TRUE</td></tr>
+              <tr><td>hacker</td><td>wrong</td><td>—</td><td style="color:var(--red)">FALSE</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-top:8px;">Each row appears as a named test: <code>[alice]</code>, <code>[bob]</code>, <code>[hacker]</code></p>
+      </div>
+      <div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-title">python — parametrized test</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="kw">from</span> data.data_loader <span class="kw">import</span> load_excel
+
+rows = load_excel(<span class="str">"data/test_data.xlsx"</span>, sheet=<span class="str">"Login"</span>)
+
+<span class="op">@pytest.mark.parametrize</span>(<span class="str">"row"</span>, rows,
+    ids=[r[<span class="str">"username"</span>] <span class="kw">for</span> r <span class="kw">in</span> rows])
+<span class="kw">def</span> <span class="fn">test_login_from_excel</span>(page, row):
+    page.<span class="fn">goto</span>(config.BASE_URL + <span class="str">"/login"</span>)
+    page.<span class="fn">fill</span>(<span class="str">"#username"</span>, str(row[<span class="str">"username"</span>]))
+    page.<span class="fn">fill</span>(<span class="str">"#password"</span>, str(row[<span class="str">"password"</span>]))
+    page.<span class="fn">click</span>(<span class="str">"button[type='submit']"</span>)
+
+    <span class="kw">if</span> str(row[<span class="str">"should_pass"</span>]).upper() == <span class="str">"TRUE"</span>:
+        expect(page.<span class="fn">locator</span>(<span class="str">".dashboard"</span>)).<span class="fn">to_be_visible</span>()
+    <span class="kw">else</span>:
+        expect(page.<span class="fn">locator</span>(<span class="str">".error-alert"</span>)).<span class="fn">to_be_visible</span>()</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Page Objects ──────────────────────────────────────────────────── -->
+<section id="pom">
+  <div class="container">
+    <div class="section-label">Page Object Model</div>
+    <h2>Reusable page helpers built in</h2>
+    <p class="section-desc">BasePage, LoginPage, and TablePage ship with Tesqo. Extend them for your app.</p>
+
+    <div class="two-col">
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-title">python — login test with POM</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="kw">from</span> pages.login_page <span class="kw">import</span> LoginPage
+<span class="kw">from</span> config.settings <span class="kw">import</span> config
+
+<span class="kw">def</span> <span class="fn">test_login</span>(page):
+    lp = <span class="fn">LoginPage</span>(page)
+    lp.<span class="fn">login</span>(config.USERNAME, config.PASSWORD)
+    lp.<span class="fn">assert_login_success</span>()</pre>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-title">python — paginated table test</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="kw">from</span> pages.table_page <span class="kw">import</span> TablePage
+
+<span class="kw">def</span> <span class="fn">test_all_users_active</span>(page):
+    tbl = <span class="fn">TablePage</span>(page,
+        table_selector=<span class="str">"table#users"</span>,
+        path=<span class="str">"/admin/users"</span>)
+    tbl.<span class="fn">open</span>()
+    <span class="kw">for</span> row <span class="kw">in</span> tbl.<span class="fn">iter_all_pages</span>():
+        status = row.<span class="fn">locator</span>(<span class="str">".status"</span>).<span class="fn">inner_text</span>()
+        assert status == <span class="str">"Active"</span></pre>
+      </div>
+    </div>
+
+    <div class="code-wrap" style="margin-top:0">
+      <div class="code-header">
+        <span class="code-title">python — extend BasePage for your own pages</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="kw">from</span> pages.base_page <span class="kw">import</span> BasePage
+
+<span class="kw">class</span> <span class="fn">DashboardPage</span>(BasePage):
+    <span class="kw">def</span> <span class="fn">go</span>(self):
+        self.<span class="fn">navigate</span>(<span class="str">"/dashboard"</span>)
+    <span class="kw">def</span> <span class="fn">get_welcome_text</span>(self):
+        <span class="kw">return</span> self.<span class="fn">get_text</span>(<span class="str">".welcome-header"</span>)</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ── Structure ─────────────────────────────────────────────────────── -->
+<section id="structure">
+  <div class="container">
+    <div class="section-label">Project Structure</div>
+    <h2>Everything in its place</h2>
+    <p class="section-desc">A clean, predictable layout so you always know where to look.</p>
+
+    <div class="tree">
+<span class="dir">tesqo/</span><br/>
+│<br/>
+├── <span class="secret">.env</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← 🔐 Your secrets (never commit this)</span><br/>
+├── <span class="file">.env.example</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Template — safe to commit</span><br/>
+├── <span class="file">setup.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← One-time first-run setup</span><br/>
+├── <span class="file">record.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Smart recorder launcher</span><br/>
+├── <span class="file">run.bat</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Interactive test runner menu</span><br/>
+├── <span class="file">pytest.ini</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← pytest config and markers</span><br/>
+├── <span class="file">requirements.txt</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← All dependencies pinned</span><br/>
+│<br/>
+├── <span class="dir">config/</span><br/>
+│&nbsp;&nbsp;&nbsp;└── <span class="file">settings.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Loads .env, typed Config object</span><br/>
+│<br/>
+├── <span class="dir">data/</span><br/>
+│&nbsp;&nbsp;&nbsp;├── <span class="file">test_data.xlsx</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Excel: rows → test cases</span><br/>
+│&nbsp;&nbsp;&nbsp;└── <span class="file">data_loader.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Reads Excel → list of dicts</span><br/>
+│<br/>
+├── <span class="dir">tests/</span><br/>
+│&nbsp;&nbsp;&nbsp;├── <span class="file">conftest.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Fixtures + auto-screenshot on fail</span><br/>
+│&nbsp;&nbsp;&nbsp;├── <span class="dir">smoke/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← @pytest.mark.smoke</span><br/>
+│&nbsp;&nbsp;&nbsp;├── <span class="dir">regression/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← @pytest.mark.regression</span><br/>
+│&nbsp;&nbsp;&nbsp;└── <span class="dir">automation/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← @pytest.mark.automation</span><br/>
+│<br/>
+├── <span class="dir">pages/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Page Object Model helpers</span><br/>
+│&nbsp;&nbsp;&nbsp;├── <span class="file">base_page.py</span><br/>
+│&nbsp;&nbsp;&nbsp;├── <span class="file">login_page.py</span><br/>
+│&nbsp;&nbsp;&nbsp;└── <span class="file">table_page.py</span><br/>
+│<br/>
+├── <span class="dir">reports/</span><br/>
+│&nbsp;&nbsp;&nbsp;├── <span class="dir">html/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← HTML reports (auto-generated)</span><br/>
+│&nbsp;&nbsp;&nbsp;└── <span class="dir">screenshots/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Auto-captured on failure</span><br/>
+│<br/>
+└── <span class="dir">scripts/</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">record.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Smart recorder logic</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">run.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← Interactive runner logic</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Tech Stack ────────────────────────────────────────────────────── -->
+<section id="stack">
+  <div class="container">
+    <div class="section-label">Tech Stack</div>
+    <h2>Best-in-class open source libraries</h2>
+    <p class="section-desc">No paid services, no lock-in. Everything is open source.</p>
+    <div class="stack-grid">
+      <div class="stack-item">
+        <div class="stack-icon">🎭</div>
+        <div class="stack-info">
+          <h4>Playwright</h4>
+          <span>Browser automation · v1.51+</span>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">🧪</div>
+        <div class="stack-info">
+          <h4>pytest</h4>
+          <span>Test runner · v8.3+</span>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">🔗</div>
+        <div class="stack-info">
+          <h4>pytest-playwright</h4>
+          <span>Playwright fixtures · v0.7+</span>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">📄</div>
+        <div class="stack-info">
+          <h4>pytest-html</h4>
+          <span>HTML reports · v4.1+</span>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">⚡</div>
+        <div class="stack-info">
+          <h4>pytest-xdist</h4>
+          <span>Parallel execution · v3.6+</span>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">📊</div>
+        <div class="stack-info">
+          <h4>openpyxl</h4>
+          <span>Excel data input · v3.1+</span>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">🔐</div>
+        <div class="stack-info">
+          <h4>python-dotenv</h4>
+          <span>Environment secrets · v1.0+</span>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">🐍</div>
+        <div class="stack-info">
+          <h4>Python</h4>
+          <span>Language · 3.11+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Roadmap ───────────────────────────────────────────────────────── -->
+<section id="roadmap">
+  <div class="container">
+    <div class="section-label">Roadmap</div>
+    <h2>Where Tesqo is headed</h2>
+    <p class="section-desc">From a project template to a fully installable CLI package on PyPI.</p>
+
+    <div class="two-col">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot done"></div>
+          <h4>v0.1 <span class="version-tag v-current">Current</span></h4>
+          <p>Project template — clone, setup.bat, record.bat, run.bat. Full POM, data-driven, multi-browser.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <h4>v1.0 <span class="version-tag v-next">Next</span></h4>
+          <p>Installable CLI — <code>pip install tesqo</code>. Commands: <code>tesqo new</code>, <code>tesqo record</code>, <code>tesqo run</code>, <code>tesqo report</code>.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <h4>v1.1 <span class="version-tag v-future">Planned</span></h4>
+          <p>Multi-project workspace. <code>tesqo switch myapp</code>. Allure report integration. Watch mode.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <h4>v2.0 <span class="version-tag v-future">Future</span></h4>
+          <p>AI-assisted test generation. Self-healing selectors. CI/CD templates for GitHub Actions.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-title">bash — future CLI (v1.0)</span>
+          </div>
+          <pre><span class="cm"># Install once, use across all projects</span>
+pip install tesqo
+
+<span class="cm"># Scaffold a new project</span>
+tesqo new myapp
+
+<span class="cm"># Record a test</span>
+cd myapp
+tesqo record
+
+<span class="cm"># Run</span>
+tesqo run smoke
+tesqo run regression --browser edge
+
+<span class="cm"># Open last report</span>
+tesqo report
+
+<span class="cm"># Switch projects</span>
+tesqo switch client-portal</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Contributing ──────────────────────────────────────────────────── -->
+<section id="contribute">
+  <div class="container">
+    <div style="text-align:center; max-width:600px; margin:0 auto;">
+      <div class="section-label" style="justify-content:center;display:flex;">Contributing</div>
+      <h2>Help make Tesqo better</h2>
+      <p style="color:var(--text-muted);margin-bottom:32px;">
+        All contributions welcome — new page helpers, CI templates, report themes, bug fixes, docs improvements.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:12px;text-align:left;margin-bottom:32px;">
+        <div style="display:flex;gap:12px;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;">
+          <span style="font-size:1.2rem">🍴</span>
+          <span style="font-size:.9rem">Fork the repo on GitHub</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;">
+          <span style="font-size:1.2rem">🌿</span>
+          <span style="font-size:.9rem">Create a feature branch: <code>git checkout -b feature/my-improvement</code></span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;">
+          <span style="font-size:1.2rem">✅</span>
+          <span style="font-size:.9rem">Add tests for your changes</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;">
+          <span style="font-size:1.2rem">🚀</span>
+          <span style="font-size:.9rem">Open a pull request — we'll review it promptly</span>
+        </div>
+      </div>
+      <a href="https://github.com/shaik-shahansha/tesqo" class="btn btn-primary" target="_blank" rel="noopener">
+        ★ Star on GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">🧪 Tesqo</div>
+  <div class="footer-tagline">Automate your web tests with ease — Record, Run &amp; Report.</div>
+  <div class="footer-links">
+    <a href="https://github.com/shaik-shahansha/tesqo" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/shaik-shahansha/tesqo/blob/main/README.md" target="_blank" rel="noopener">README</a>
+    <a href="https://github.com/shaik-shahansha/tesqo/blob/main/ROADMAP.md" target="_blank" rel="noopener">Roadmap</a>
+    <a href="https://github.com/shaik-shahansha/tesqo/issues" target="_blank" rel="noopener">Issues</a>
+    <a href="https://github.com/shaik-shahansha/tesqo/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+  </div>
+  <div class="footer-copy">
+    Built with ❤️ for testers who believe web automation should be easy.<br/>
+    MIT License · <a href="https://github.com/shaik-shahansha/tesqo" target="_blank" rel="noopener">github.com/shaik-shahansha/tesqo</a>
+  </div>
+</footer>
+
+<script>
+  // Copy button
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.style.color = 'var(--green)';
+      btn.style.borderColor = 'var(--green)';
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 1800);
+    });
+  }
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.style.color = '');
+        const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (active) active.style.color = 'var(--text)';
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
